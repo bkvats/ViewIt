@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import BasicInput from "../components/BasicInput";
-import PrimaryNavigateButton from "../components/PrimaryNavigateButton";
-import SecondaryNavigateButton from "../components/SecondaryNavigateButton";
-export default function Signin() {
+import PrimaryButton from "../components/PrimaryButton";
+import SecondaryButton from "../components/SecondaryButton";
+export default function SignIn() {
     const [email, setEmail] = useState("");
     return (
         <div className="bg-[url(src/pages/images/signup-bg.jpg)] w-full min-h-screen bg-no-repeat bg-cover bg-center flex justify-center lg:items-center">
@@ -15,8 +15,8 @@ export default function Signin() {
                 <div className="w-full lg:w-1/2 flex flex-col justify-around">
                     <BasicInput type={"text"} title={"Email"} value={email} setValue={setEmail} />
                     <div className="mt-4 self-end">
-                        <SecondaryNavigateButton title={"Create account"}/>
-                        <PrimaryNavigateButton title={"Next"}/>
+                        <SecondaryButton title={"Create account"}/>
+                        <PrimaryButton title={"Next"}/>
                     </div>
                 </div>
             </div>
