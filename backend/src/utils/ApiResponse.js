@@ -1,8 +1,8 @@
-export default function ApiResponse(statusCode, data, message = "success") {
+export default function ApiResponse(statusCode, message, data) {
     return {
         statusCode,
         data,
-        message,
+        message: message ? message : "success",
         success: statusCode < 400
     };
 }

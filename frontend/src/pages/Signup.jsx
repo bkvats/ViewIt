@@ -4,15 +4,20 @@ import PrimaryButton from "../components/PrimaryButton";
 import ErrorComp from "../components/ErrorComp";
 import axios from "axios";
 import Loader from "../components/Loader";
+import UploadAvatar from "../components/UploadAvatar";
+import SecondaryButton from "../components/SecondaryButton";
 export default function SignUp() {
     const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
     const [email, setEmail] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [dataOrder, setDataOrder] = useState(0);
+    const [imageUrl, setImageUrl] = useState("https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png");
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [dataOrder, setDataOrder] = useState(4);
     const [error, setError] = useState("");
     const dataFlow = [
         {
@@ -58,17 +63,17 @@ export default function SignUp() {
             inputFields: [
                 {
                     type: "text",
-                    name: "firstName",
+                    name: "firstname",
                     placeholder: "First Name",
-                    value: firstName,
-                    setValue: setFirstName
+                    value: firstname,
+                    setValue: setFirstname
                 },
                 {
                     type: "text",
-                    name: "lastName",
+                    name: "lastname",
                     placeholder: "Last name (optional)",
-                    value: lastName,
-                    setValue: setLastName
+                    value: lastname,
+                    setValue: setLastname
                 }
             ],
             buttonReq: {
@@ -76,9 +81,9 @@ export default function SignUp() {
                 eventHandler: () => {
                     setLoading(true);
                     const NameRegex = /^[A-Za-zÀ-ÿ]+([-'\s][A-Za-zÀ-ÿ]+)*$/;
-                    if (!firstName) setError("First name is required!");
-                    else if (NameRegex.test(firstName)) {
-                        if (lastName && !NameRegex.test(lastName)) setError("Invalid last name!");
+                    if (!firstname) setError("First name is required!");
+                    else if (NameRegex.test(firstname)) {
+                        if (lastname && !NameRegex.test(lastname)) setError("Invalid last name!");
                         else setDataOrder(dataOrder + 1);
                     }
                     else setError("Invalid first name!");
@@ -155,26 +160,61 @@ export default function SignUp() {
                 }
             }
         },
+        {
+            title: "Upload an avatar or continue with the default one",
+            uploadFields: {
+                name: "",
+                setValue: null,
+                setError,
+                imageUrl,
+                setImageUrl,
+                setAvatarFile
+            },
+            buttonReq: {
+                title: "Next",
+                eventHandler: async () => {
+                    setLoading(true);
+                    setLoadingMessage("Saving Info...");
+                    try {
+                        const result = await axios.post("/api/v1/users/register-user", {
+                            firstname,
+                            lastname,
+                            email,
+                            username,
+                            password,
+                            avatarFile
+                        });
+                        console.log(result);
+                    }
+                    catch (error) {
+                        console.log(error.message);
+                    }
+                }
+            }
+        }
     ];
     return (
-        <div className="bg-[url(src/pages/images/signup-bg.jpg)] w-full min-h-screen bg-no-repeat bg-cover bg-center flex justify-center lg:items-center">
-            <div className={`relative w-full mx-2 lg:w-3/4 h-96 lg:h-72 bg-[#1F1D2B] p-8 flex flex-col lg:flex-row justify-between rounded-2xl mt-12 lg:mt-0`}>
+        <div className="bg-[url(src/pages/images/signup-bg.jpg)] w-full min-h-screen bg-no-repeat bg-cover bg-center flex justify-center items-center">
+            <div className={`relative w-full min-h-72 mx-2 lg:w-3/4 bg-[#1F1D2B] p-8 flex flex-col lg:flex-row rounded-2xl`}>
                 <div className="w-full lg:w-1/2 flex flex-col gap-4">
                     <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728321572/logo_fwrgzv.svg" alt="logo" width={50} />
                     <h1 className="text-4xl font-bold">Create an Account</h1>
-                    <p>{dataFlow[dataOrder].title}</p>
+                    <p className="text-lg">{dataFlow[dataOrder].title}</p>
                 </div>
-                <div className="w-full lg:w-1/2 flex flex-col justify-around">
+                <div className="w-full lg:w-1/2 lg:mt-4 flex flex-col justify-around gap-2">
                     {
-                        dataFlow[dataOrder].inputFields.map((i) => (
+                        dataFlow[dataOrder].inputFields ? dataFlow[dataOrder].inputFields.map((i) => (
                             <BasicInput key={i.name} {...i} setError={setError} />
-                        ))
+                        )) : <UploadAvatar {...dataFlow[dataOrder].uploadFields}/>
                     }
                     {error && <ErrorComp message={error} />}
-                    <PrimaryButton {...dataFlow[dataOrder].buttonReq} />
+                    <div className="self-end mt-4">
+                    <SecondaryButton title={"Back"} className={"mx-4"} eventHandler={() => {setDataOrder(dataOrder > 0 ? dataOrder - 1 : 0)}}/>
+                    <PrimaryButton {...dataFlow[dataOrder].buttonReq}/>
+                    </div>
                 </div>
-                {loading && <Loader />}
+                {loading && <Loader message={loadingMessage}/>}
             </div>
         </div>
-    )
+    );
 }
