@@ -29,5 +29,17 @@ const registerUser = asyncHandler(async (req, res) => {
     const isUserCreated = await User.findById(user._id).select("-password");
     if (isUserCreated) return res.status(200).json(ApiResponse(200, "User registered successfully", isUserCreated));
     return res.status(400).json(ApiResponse(500, "Something went wrong while registering user"));
+});
+const logInUser = asyncHandler(async (req, res) => {
+    const {identifier, password} = req.body;
+    if (!identifier || !password) return res.status(400).json(ApiResponse(400, "All fields are required"));
+    const user = await User.findOne({$or: [{email: identifier}, {username: identifier}]});
+    if (!user) return res.status(404).json(ApiResponse(404, "User not found"));
+    if (!await user.checkPassword(password)) return res.status(400).json(ApiResponse(400, "Wrong Password. Try again"));
+    const accessToken = await user.generateAccessToken();
+    return res.status(200).cookie("aToken", accessToken, {httpOnly: true, secure: true}).json(ApiResponse(200, "Logged in successfully", true));
+});
+const logOutUser = asyncHandler(async (req, res) => {
+    return res.status(200).clearCookie("aToken", {httpOnly: true, secure: true}).json(200, "Logged out successfully");
 })
-export {isUserNameAvailable, isemailAvailable, registerUser};
+export {isUserNameAvailable, isemailAvailable, registerUser, logInUser, logOutUser};

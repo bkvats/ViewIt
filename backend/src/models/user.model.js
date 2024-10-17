@@ -42,10 +42,10 @@ userSchema.pre("save", async function(next) {
     if (this.isModified("password")) this.password = await bcrypt.hash(this.password, 8);
     next();
 });
-userSchema.methods.checkPassword = async (password) => {
-    return await bcrypt.compare(this.password, password);
+userSchema.methods.checkPassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
 }
-userScheam.methods.generateAccessToken = function() {
+userSchema.methods.generateAccessToken = function() {
     return jwt.sign({
         _id: this._id
     }, process.env.ACCESS_TOKEN_SECRET);

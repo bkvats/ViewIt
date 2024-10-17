@@ -6,7 +6,7 @@ import axios from "axios";
 import Loader from "../components/Loader";
 import UploadAvatar from "../components/UploadAvatar";
 import SecondaryButton from "../components/SecondaryButton";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function SignUp() {
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
@@ -154,8 +154,6 @@ export default function SignUp() {
             buttonReq: {
                 title: "Next",
                 eventHandler: () => {
-                    setPassword(password.trim());
-                    setConfirmPassword(confirmPassword.trim());
                     setLoading(true);
                     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>?~`-])[A-Za-z\d!@#$%^&*()_+[\]{};':"\\|,.<>?~`-]{8,20}$/;
                     if (!password) setError("Password is required!");
