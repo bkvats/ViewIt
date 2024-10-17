@@ -1,5 +1,4 @@
 import { User } from "../models/user.model.js";
-import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import cloudinaryUpload from "../utils/cloudinaryUpload.js";
@@ -22,11 +21,12 @@ const registerUser = asyncHandler(async (req, res) => {
     const {firstname, lastname, email, username, password} = req.body;
     if ([firstname, lastname, email, username, password].some((i) => i ? i.trim() === "" : true)) return res.status(400).json(ApiResponse(400, "All fields are required"));
     const avatarLocalPath = req.file?.path;
-    if (!avatarLocalPath) return res.status(400).json(ApiResponse(400, "Avatar not found"));
-    const cloud = await cloudinaryUpload(avatarLocalPath);
-    if (!cloud) return res.status(500).json(500, "An error occurred while uploading avatar");
-    const user = await User.create({firstname, lastname, email, username, password, avatar: cloud.url});
-    const isUserCreated = await User.findById(user._id).select("-password -refreshToken");
+    let cloud = undefined;
+    if (avatarLocalPath) {
+        cloud = await cloudinaryUpload(avatarLocalPath);
+    }
+    const user = await User.create({firstname, lastname, email, username, password, avatar: cloud?.url});
+    const isUserCreated = await User.findById(user._id).select("-password");
     if (isUserCreated) return res.status(200).json(ApiResponse(200, "User registered successfully", isUserCreated));
     return res.status(400).json(ApiResponse(500, "Something went wrong while registering user"));
 })

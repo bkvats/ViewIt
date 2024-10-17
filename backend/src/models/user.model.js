@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema({
     firstname: {
         type: String,
@@ -10,11 +11,13 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String, 
-        required: true
+        required: true,
+        unique: true
     },
     username: {
         type: String,
         required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -26,9 +29,6 @@ const userSchema = new mongoose.Schema({
         default: "https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png",
     },
     coverImage: {
-        type: String
-    },
-    refreshToken: {
         type: String
     },
     watchHistory: {
@@ -44,5 +44,10 @@ userSchema.pre("save", async function(next) {
 });
 userSchema.methods.checkPassword = async (password) => {
     return await bcrypt.compare(this.password, password);
+}
+userScheam.methods.generateAccessToken = function() {
+    return jwt.sign({
+        _id: this._id
+    }, process.env.ACCESS_TOKEN_SECRET);
 }
 export const User = mongoose.model("User", userSchema);

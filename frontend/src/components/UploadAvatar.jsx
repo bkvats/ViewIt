@@ -19,8 +19,8 @@ export default function UploadAvatar({name, setValue, setError, imageUrl, setIma
                     setError("Invalid file type. Please upload jpg/png/webp image only!");
                     return;
                 }
-                setImageUrl(URL.createObjectURL(file));
                 setAvatarFile(file);
+                setImageUrl(URL.createObjectURL(file));
             }} hidden/>
         </div>
     );

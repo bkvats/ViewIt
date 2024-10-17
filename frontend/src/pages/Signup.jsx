@@ -6,6 +6,7 @@ import axios from "axios";
 import Loader from "../components/Loader";
 import UploadAvatar from "../components/UploadAvatar";
 import SecondaryButton from "../components/SecondaryButton";
+import { useLocation, useNavigate } from "react-router-dom";
 export default function SignUp() {
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
@@ -17,8 +18,9 @@ export default function SignUp() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [imageUrl, setImageUrl] = useState("https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png");
     const [avatarFile, setAvatarFile] = useState(null);
-    const [dataOrder, setDataOrder] = useState(4);
+    const [dataOrder, setDataOrder] = useState(0);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
     const dataFlow = [
         {
             title: "Enter you email",
@@ -34,7 +36,7 @@ export default function SignUp() {
             buttonReq: {
                 title: "Next",
                 eventHandler: async () => {
-                    setError("");
+                    setEmail(email.trim());
                     const emailRegex = /^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,253}\.[a-zA-Z]{2,}$/;
                     if (!email) setError("Email is required!");
                     else if (emailRegex.test(email)) {
@@ -80,6 +82,8 @@ export default function SignUp() {
                 title: "Next",
                 eventHandler: () => {
                     setLoading(true);
+                    setFirstname(firstname.trim());
+                    setLastname(lastname.trim());
                     const NameRegex = /^[A-Za-zÀ-ÿ]+([-'\s][A-Za-zÀ-ÿ]+)*$/;
                     if (!firstname) setError("First name is required!");
                     else if (NameRegex.test(firstname)) {
@@ -105,6 +109,7 @@ export default function SignUp() {
             buttonReq: {
                 title: "Next",
                 eventHandler: async () => {
+                    setUsername(username.trim());
                     const usernameRegex = /^(?!.*[-_]{2})(?![-_])[a-zA-Z0-9-_]{3,20}(?<![-_])$/;
                     if (!username) setError("Username is required!");
                     else if (usernameRegex.test(username)) {
@@ -149,6 +154,8 @@ export default function SignUp() {
             buttonReq: {
                 title: "Next",
                 eventHandler: () => {
+                    setPassword(password.trim());
+                    setConfirmPassword(confirmPassword.trim());
                     setLoading(true);
                     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>?~`-])[A-Za-z\d!@#$%^&*()_+[\]{};':"\\|,.<>?~`-]{8,20}$/;
                     if (!password) setError("Password is required!");
@@ -173,29 +180,40 @@ export default function SignUp() {
             buttonReq: {
                 title: "Next",
                 eventHandler: async () => {
+                    setError("");
                     setLoading(true);
                     setLoadingMessage("Saving Info...");
                     try {
-                        const result = await axios.post("/api/v1/users/register-user", {
+                        await axios.post("/api/v1/users/register-user", {
                             firstname,
                             lastname,
                             email,
                             username,
                             password,
-                            avatarFile
+                            avatar: avatarFile
+                        }, {
+                            headers: {
+                                "Content-Type": "multipart/form-data"
+                            }
                         });
-                        console.log(result);
+                        navigate("/sign-in");
                     }
                     catch (error) {
-                        console.log(error.message);
+                        setError("Something went wrong! Kindly try again...");
+                        console.log(error);
                     }
+                    setLoading(false);
+                    setLoadingMessage("");
                 }
             }
         }
     ];
     return (
-        <div className="bg-[url(src/pages/images/signup-bg.jpg)] w-full min-h-screen bg-no-repeat bg-cover bg-center flex justify-center items-center">
-            <div className={`relative w-full min-h-72 mx-2 lg:w-3/4 bg-[#1F1D2B] p-8 flex flex-col lg:flex-row rounded-2xl`}>
+        <div className="lg:bg-[url(https://static.vecteezy.com/system/resources/previews/024/448/956/large_2x/space-wallpaper-banner-background-stunning-view-of-a-cosmic-galaxy-with-planets-and-space-objects-elements-of-this-image-furnished-by-nasa-generate-ai-free-photo.jpg)] w-full min-h-screen bg-no-repeat bg-cover bg-center flex justify-center items-center">
+            <div className={`relative w-full min-h-screen lg:min-h-72 lg:mx-2 lg:w-3/4 bg-[#1F1D2B] p-8 flex flex-col lg:flex-row lg:rounded-2xl`}>
+            <button className="absolute top-0 right-0 m-2 text-lg cursor-pointer p-1 rounded-full hover:bg-[#ffffff58]" onClick={() => {
+                navigate(-1);
+            }}>❌</button>
                 <div className="w-full lg:w-1/2 flex flex-col gap-4">
                     <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728321572/logo_fwrgzv.svg" alt="logo" width={50} />
                     <h1 className="text-4xl font-bold">Create an Account</h1>
@@ -209,7 +227,10 @@ export default function SignUp() {
                     }
                     {error && <ErrorComp message={error} />}
                     <div className="self-end mt-4">
-                    <SecondaryButton title={"Back"} className={"mx-4"} eventHandler={() => {setDataOrder(dataOrder > 0 ? dataOrder - 1 : 0)}}/>
+                    <SecondaryButton title={"Back"} className={"mx-4"} eventHandler={() => {
+                        if (dataOrder == 0) navigate(-1);
+                        setDataOrder(dataOrder - 1);
+                    }}/>
                     <PrimaryButton {...dataFlow[dataOrder].buttonReq}/>
                     </div>
                 </div>
