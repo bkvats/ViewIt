@@ -40,6 +40,9 @@ const logInUser = asyncHandler(async (req, res) => {
     return res.status(200).cookie("aToken", accessToken, {httpOnly: true, secure: true}).json(ApiResponse(200, "Logged in successfully", true));
 });
 const logOutUser = asyncHandler(async (req, res) => {
-    return res.status(200).clearCookie("aToken", {httpOnly: true, secure: true}).json(200, "Logged out successfully");
+    return res.status(200).clearCookie("aToken", {httpOnly: true, secure: true}).json(ApiResponse(200, "Logged out successfully"));
+});
+const getCurrentUser = asyncHandler(async (req, res) => {
+    return res.status(200).json(ApiResponse(200, "User fetched successfully", req.user));
 })
-export {isUserNameAvailable, isemailAvailable, registerUser, logInUser, logOutUser};
+export {isUserNameAvailable, isemailAvailable, registerUser, logInUser, logOutUser, getCurrentUser};

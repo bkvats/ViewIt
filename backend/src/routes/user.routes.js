@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { isemailAvailable, isUserNameAvailable, logInUser, logOutUser, registerUser } from "../controllers/user.controller.js";
+import { getCurrentUser, isemailAvailable, isUserNameAvailable, logInUser, logOutUser, registerUser } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 
@@ -12,4 +12,5 @@ userRouter.route("/login").post(logInUser);
 // SECURED ROUTES (user must be login to access these routes)
 
 userRouter.route("/logout").post(verifyJwt, logOutUser);
+userRouter.route("/get-current-user").get(verifyJwt, getCurrentUser);
 export default userRouter;
