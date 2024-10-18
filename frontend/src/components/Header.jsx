@@ -14,15 +14,6 @@ export default function Header() {
                 </div>
             </div>
             <div className="hidden md:flex justify-center items-center">
-                <img src="https://res.cloudinary.com/duhmeadz6/image/upload/avatarTwoTemplate_ukkmnc.jpg" className="rounded-full" alt="" width={30} />
-                <div className="mx-2">
-                    <select
-                        className="bg-transparent focus:outline-none cursor-pointer"
-                    >
-                        <option value="" disabled selected hidden>User</option>
-                        <option className={`bg-[${primaryBgColor}]`} value="link1">Link 1</option>
-                    </select>
-                </div>
                 <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728321572/bell-icon_daxgfh.svg" className="mx-8 cursor-pointer" alt="" width={25}/>
             </div>
         </header>
