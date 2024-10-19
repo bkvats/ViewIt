@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { primaryBgColor, secondaryBgColor } from "../constants";
 export default function Header() {
     const [search, setSearch] = useState("");
     return (
-        <header className="flex justify-between items-center md:px-14 px-2 py-3">
+        <header className="flex justify-between items-center mb-2 md:px-14 px-2 py-3">
             <div className="w-full flex justify-between items-center md:w-1/2">
                 <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728321572/logo_fwrgzv.svg" alt="logo" width={50} />
                 <div className={`w-3/4 bg-[#808191] flex justify-between items-center rounded-lg`}>

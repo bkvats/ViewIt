@@ -8,8 +8,11 @@ import Loader from "./components/Loader";
 export default function App() {
   return (
     <>
-    <Header />
-    <Outlet />
+      <Header />
+      <main className="w-screen flex">
+        <Sidebar />
+        <Outlet />
+      </main>
     </>
   )
 }
