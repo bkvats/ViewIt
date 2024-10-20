@@ -95,7 +95,7 @@ export default function SignIn() {
             }}>❌</button>
                 <div className="w-full lg:w-1/2 flex flex-col gap-4">
                     <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728321572/logo_fwrgzv.svg" alt="logo" width={50} />
-                    <h1 className="text-4xl font-bold">Create an Account</h1>
+                    <h1 className="text-4xl font-bold">Sign in</h1>
                     <p className="text-lg">{dataFlow[dataOrder].title}</p>
                 </div>
                 <div className="w-full lg:w-1/2 lg:mt-4 flex flex-col justify-around gap-2">

@@ -1,34 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 export const authSlice = createSlice({
     name: "auth",
     initialState: {
         isLoggedIn: false,
-        loading: true,
+        loading: false,
         userData: {}
     },
     reducers: {
-        login: async (state, action) => {
-            state.loading = true;
-            if (!isLoggedIn) {
-                const response = await axios("/api/v1/users/get-current-user");
-                if (response.ok) {
-                    state.userData = response.data.data;
-                    state.isLoggedIn = true;
-                }
-                state.loading = false;
-            }
+        login: (state, action) => {
+            state.userData = action.payload;
+            state.isLoggedIn = true;
         },
-        logout: async (state, action) => {
-            state.loading = true;
-            if (isLoggedIn) {
-                const respone = await axios("/api/v1/users/logout");
-                if (response.ok) {
-                    state.userData = {};
-                    state.isLoggedIn = false;
-                }
-            }
-            state.loading = false;
+        logout: (state, action) => {
+            state.userData = {};
+            state.isLoggedIn = false;
+        },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
         }
     }
 });
-export const {login, logout} = authSlice.actions;
+export const {login, logout, setLoading} = authSlice.actions;

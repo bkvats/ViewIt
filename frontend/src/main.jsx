@@ -11,16 +11,18 @@ import Channel from './pages/Channel.jsx'
 import Playlists from './pages/Playlists.jsx'
 import History from './pages/History.jsx'
 import LikedVideos from './pages/LikedVideos.jsx'
+import { Provider } from 'react-redux'
+import { store } from './store/store.js'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path='/' element={<App />}>
-      <Route path='' element={<Home />} />
-      <Route path='/subscription' element={<Subscription />} />
-      <Route path='/channel' element={<Channel />} />
-      <Route path='/history' element={<History />} />
-      <Route path='/playlists' element={<Playlists />} />
-      <Route path='/liked-videos' element={<LikedVideos />} />
+        <Route path='' element={<Home />} />
+        <Route path='/subscription' element={<Subscription />} />
+        <Route path='/channel' element={<Channel />} />
+        <Route path='/history' element={<History />} />
+        <Route path='/playlists' element={<Playlists />} />
+        <Route path='/liked-videos' element={<LikedVideos />} />
       </Route>
       <Route path='/sign-in' element={<SignIn />} />
       <Route path='/sign-up' element={<SignUp />} />
@@ -28,7 +30,7 @@ const router = createBrowserRouter(
   )
 )
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <Provider store={store}>
     <RouterProvider router={router} />
-  </StrictMode>,
+  </Provider>
 )

@@ -1,3 +1,4 @@
+import { options } from "../constants.js";
 import { User } from "../models/user.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -37,10 +38,10 @@ const logInUser = asyncHandler(async (req, res) => {
     if (!user) return res.status(404).json(ApiResponse(404, "User not found"));
     if (!await user.checkPassword(password)) return res.status(400).json(ApiResponse(400, "Wrong Password. Try again"));
     const accessToken = await user.generateAccessToken();
-    return res.status(200).cookie("aToken", accessToken, {httpOnly: true, secure: true}).json(ApiResponse(200, "Logged in successfully", true));
+    return res.status(200).cookie("aToken", accessToken, options).json(ApiResponse(200, "Logged in successfully", true));
 });
 const logOutUser = asyncHandler(async (req, res) => {
-    return res.status(200).clearCookie("aToken", {httpOnly: true, secure: true}).json(ApiResponse(200, "Logged out successfully"));
+    return res.status(200).clearCookie("aToken", options).json(ApiResponse(200, "Logged out successfully"));
 });
 const getCurrentUser = asyncHandler(async (req, res) => {
     return res.status(200).json(ApiResponse(200, "User fetched successfully", req.user));
