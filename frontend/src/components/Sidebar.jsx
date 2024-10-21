@@ -34,12 +34,12 @@ export default function Sidebar() {
         }
     ];
     return (
-        <div className="lg:w-1/6 sticky top-0 h-screen mx-1">
+        <div className="lg:w-1/6 sticky top-0 h-screen ml-1">
             <ul>
                 {
                     links.map((i) => (
                         <li key={i.name}>
-                            <NavLink to={i.to} className={({isActive}) => `${isActive ? "bg-[#00000076] rounded-xl border-[1px] border-white font-bold" : ""} flex gap-2 items-center justify-start my-4 mx-1 p-2`}>
+                            <NavLink to={i.to} className={({isActive}) => `${isActive ? "bg-[#00000076] border-[1px] border-white font-bold" : ""} flex gap-2 items-center justify-start my-4 mx-1 p-2 hover:border-white hover:border rounded-xl`}>
                                 <img src={`src/components/images/normal-${i.imageUrl}.svg`} alt="logo" />
                                 <span className="hidden lg:block text-xl">{i.name}</span>
                             </NavLink>

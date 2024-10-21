@@ -36,7 +36,7 @@ export default function Header() {
                     }} />
                     {userOptionsVisible &&
                         <div className="absolute top-14 border-[1px] border-white rounded-lg overflow-auto">
-                            <img src={userData.avatar} alt="" className="w-52 h-52 rounded-lg object-cover object-center"/>
+                            <img src={userData.avatar} alt="" className="w-52 h-52 rounded-lg object-cover object-center" />
                             <ul className="absolute top-0 w-full h-full bg-[#000000ac] py-1 px-2 text-lg">
                                 {
                                     userOptions.map((i) => (
@@ -60,6 +60,9 @@ export default function Header() {
                                     <img src="src/components/images/Header/logout-icon.svg" alt="" width={20} />
                                     <span>Log out</span>
                                 </li>
+                                <img src="src/components/images/Header/close.svg" alt="close" width={35} className="mt-12 mx-auto hover:bg-slate-800 p-2 rounded-full cursor-pointer" onClick={() => {
+                                    setUserOptionsVisible(false);
+                                }}/>
                             </ul>
                         </div>}
                 </div> :

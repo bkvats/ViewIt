@@ -37,7 +37,9 @@ export default function App() {
       <Header />
       <main className="w-full flex gap-2">
         <Sidebar />
+        <div className="px-1 lg:px-4 w-5/6">
         <Outlet />
+        </div>
       </main>
     </>
   );
