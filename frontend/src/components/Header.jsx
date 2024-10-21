@@ -35,35 +35,38 @@ export default function Header() {
                         setUserOptionsVisible(!userOptionsVisible);
                     }} />
                     {userOptionsVisible &&
-                        <ul className="absolute top-14 mt-1 bg-[#00000076] py-1 px-2 text-lg border-[1px] border-white rounded-lg">
-                            {
-                                userOptions.map((i) => (
-                                    <li key={i.name} className="hover:underline my-2">
-                                        <Link to={i.to} className="flex space-x-2">
-                                            <img src={i.imgUrl} alt="" width={20} />
-                                            <span>{i.name}</span>
-                                        </Link>
-                                    </li>
-                                ))
-                            }
-                            <hr />
-                            <li className="flex space-x-2 my-2 hover:underline cursor-pointer" onClick={async () => {
-                                dispatch(setLoading(true));
-                                const response = await axios.post("/api/v1/users/logout");
-                                if (response.status == 200) {
-                                    dispatch(logout());
+                        <div className="absolute top-14 border-[1px] border-white rounded-lg overflow-auto">
+                            <img src={userData.avatar} alt="" className="w-52 h-52 rounded-lg object-cover object-center"/>
+                            <ul className="absolute top-0 w-full h-full bg-[#000000ac] py-1 px-2 text-lg">
+                                {
+                                    userOptions.map((i) => (
+                                        <li key={i.name} className="hover:underline my-2">
+                                            <Link to={i.to} className="flex space-x-2">
+                                                <img src={i.imgUrl} alt="" width={20} />
+                                                <span>{i.name}</span>
+                                            </Link>
+                                        </li>
+                                    ))
                                 }
-                                dispatch(setLoading(false));
-                            }}>
-                                <img src="src/components/images/Header/logout-icon.svg" alt="" width={20} />
-                                <span>Log out</span>
-                            </li>
-                        </ul>}
+                                <hr />
+                                <li className="flex space-x-2 my-2 hover:underline cursor-pointer" onClick={async () => {
+                                    dispatch(setLoading(true));
+                                    const response = await axios.post("/api/v1/users/logout");
+                                    if (response.status == 200) {
+                                        dispatch(logout());
+                                    }
+                                    dispatch(setLoading(false));
+                                }}>
+                                    <img src="src/components/images/Header/logout-icon.svg" alt="" width={20} />
+                                    <span>Log out</span>
+                                </li>
+                            </ul>
+                        </div>}
                 </div> :
-                <div className="flex space-x-2 items-center">
-                    <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png" alt="avatar" className="rounded-full w-7 h-7 cursor-pointer" />
-                    <Link className="text-sm md:text-lg hover:underline" to={"/sign-in"}>Sign in</Link>
-                </div>}
+                    <div className="flex space-x-2 items-center">
+                        <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png" alt="avatar" className="rounded-full w-7 h-7 cursor-pointer" />
+                        <Link className="text-sm md:text-lg hover:underline" to={"/sign-in"}>Sign in</Link>
+                    </div>}
                 <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728321572/bell-icon_daxgfh.svg" className="hidden md:block cursor-pointer" alt="" width={25} />
             </div>
         </header>

@@ -34,8 +34,11 @@ export default function App() {
   if (authLoading) return <Loader />;
   return (
     <>
-    <Header />
-    <Sidebar />
+      <Header />
+      <main className="w-full flex gap-2">
+        <Sidebar />
+        <Outlet />
+      </main>
     </>
   );
 }

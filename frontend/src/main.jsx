@@ -13,16 +13,19 @@ import History from './pages/History.jsx'
 import LikedVideos from './pages/LikedVideos.jsx'
 import { Provider } from 'react-redux'
 import { store } from './store/store.js'
+import AuthLayout from './components/AuthLayout.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path='/' element={<App />}>
         <Route path='' element={<Home />} />
-        <Route path='/subscription' element={<Subscription />} />
-        <Route path='/channel' element={<Channel />} />
-        <Route path='/history' element={<History />} />
-        <Route path='/playlists' element={<Playlists />} />
-        <Route path='/liked-videos' element={<LikedVideos />} />
+        <Route element={<AuthLayout />}>
+          <Route path='/subscription' element={<Subscription />} />
+          <Route path='/channel' element={<Channel />} />
+          <Route path='/history' element={<History />} />
+          <Route path='/playlists' element={<Playlists />} />
+          <Route path='/liked-videos' element={<LikedVideos />} />
+        </Route>
       </Route>
       <Route path='/sign-in' element={<SignIn />} />
       <Route path='/sign-up' element={<SignUp />} />
