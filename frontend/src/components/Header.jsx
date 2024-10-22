@@ -34,8 +34,7 @@ export default function Header() {
                     <img src={userData.avatar} alt="avatar" className={`rounded-full w-9 h-9 cursor-pointer ${userOptionsVisible && "p-[2px] border-[1px] border-white"}`} onClick={() => {
                         setUserOptionsVisible(!userOptionsVisible);
                     }} />
-                    {userOptionsVisible &&
-                        <div className="absolute top-14 border-[1px] border-white rounded-lg overflow-auto">
+                        <div className={`${userOptionsVisible ? "scale-100" : "scale-0"} absolute top-14 border-[1px] border-white rounded-lg overflow-auto transition-transform origin-top-right lg:origin-top`}>
                             <img src={userData.avatar} alt="" className="w-52 h-52 rounded-lg object-cover object-center" />
                             <ul className="absolute top-0 w-full h-full bg-[#000000ac] py-1 px-2 text-lg">
                                 {
@@ -64,7 +63,7 @@ export default function Header() {
                                     setUserOptionsVisible(false);
                                 }}/>
                             </ul>
-                        </div>}
+                        </div>
                 </div> :
                     <div className="flex space-x-2 items-center">
                         <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png" alt="avatar" className="rounded-full w-7 h-7 cursor-pointer" />
