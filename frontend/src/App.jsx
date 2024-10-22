@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import Header from "./components/Header";
-import Card from "./components/Card";
 import Sidebar from "./components/Sidebar";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +36,7 @@ export default function App() {
       <Header />
       <main className="w-full flex gap-2">
         <Sidebar />
-        <div className="px-4 w-full lg:w-5/6 h-full">
+        <div className="px-4 w-full lg:w-5/6">
         <Outlet />
         </div>
       </main>

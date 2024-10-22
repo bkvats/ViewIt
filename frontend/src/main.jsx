@@ -14,6 +14,9 @@ import LikedVideos from './pages/LikedVideos.jsx'
 import { Provider } from 'react-redux'
 import { store } from './store/store.js'
 import AuthLayout from './components/AuthLayout.jsx'
+import ChannelVideos from './components/Channel/channel.videos.jsx'
+import ChannelPlaylists from './components/Channel/channel.playlists.jsx'
+import ChannelHome from './components/Channel/Channel.Home.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -21,7 +24,11 @@ const router = createBrowserRouter(
         <Route path='' element={<Home />} />
         <Route element={<AuthLayout />}>
           <Route path='/subscription' element={<Subscription />} />
-          <Route path='/channel' element={<Channel />} />
+          <Route path='/channel' element={<Channel />}>
+            <Route path='' element={<ChannelHome />} />
+            <Route path='videos' element={<ChannelVideos />} />
+            <Route path='playlists' element={<ChannelPlaylists />} />
+          </Route>
           <Route path='/history' element={<History />} />
           <Route path='/playlists' element={<Playlists />} />
           <Route path='/liked-videos' element={<LikedVideos />} />

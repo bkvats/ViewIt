@@ -47,7 +47,7 @@ export default function Sidebar() {
             <button className={`bg-[#000000] fixed rounded-full p-2 lg:hidden z-10 border border-white ${showSideBar ? "left-[60%] rotate-180 border border-white top-1/2 hidden" : "left-[-20px]"}`} onClick={() => {
                 setShowSideBar(!showSideBar);
             }}><img src="src\components\images\right-arrow.svg" alt="arrow" /></button>
-            <div className={`${showSideBar ? "border-r" : "translate-x-[-100%] lg:translate-x-0"} transition-transform duration-500 ease-in-out bg-[#1F1D2B] w-[70%] lg:block lg:w-1/6 fixed lg:sticky top-14 left-0 h-screen`}>
+            <div className={`${showSideBar ? "border-r" : "translate-x-[-100%] lg:translate-x-0"} transition-transform duration-500 ease-in-out bg-[#1F1D2B] w-[70%] lg:block lg:w-1/6 fixed lg:sticky top-14 left-0 h-screen z-10`}>
                 <ul>
                     {
                         links.map((i) => (
