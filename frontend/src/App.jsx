@@ -6,8 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "./components/Loader";
 import { login, setLoading } from "./store/authSlice";
 import axios from "axios";
+import PlayListCard from "./components/PlayListCard";
 export default function App() {
-  const { isLoggedIn } = useSelector(state => state.auth);
+  const { isLoggedIn, userData } = useSelector(state => state.auth);
   const authLoading = useSelector(state => state.auth.loading);
   const dispatch = useDispatch();
   useEffect(() => {
