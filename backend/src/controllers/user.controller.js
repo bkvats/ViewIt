@@ -2,6 +2,7 @@ import { options } from "../constants.js";
 import { User } from "../models/user.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import cloudinaryDestory from "../utils/cloudinaryDestroy.js";
 import cloudinaryUpload from "../utils/cloudinaryUpload.js";
 
 const isUserNameAvailable = asyncHandler(async (req, res) => {
@@ -54,11 +55,14 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     user.coverImage = cloud?.url;
     await user.save({validateBeforeSave: false});
-    return res.status(200).json(ApiResponse(200, "Successfully set cover image.", true));
+    return res.status(200).json(ApiResponse(200, "Successfully set cover image."));
 });
 const removeCoverImage = asyncHandler(async (req, res) => {
     const user = req.user;
     if (user.coverImage) {
+        const temp = user.coverImage.split("/");
+        const publicId = temp[temp.length - 1].replace(".jpg", "");
+        await cloudinaryDestory(publicId);
         await User.findByIdAndUpdate(req.user._id, {
             $unset: {
                 coverImage: 1
@@ -71,17 +75,84 @@ const removeCoverImage = asyncHandler(async (req, res) => {
 const updateAvatar = asyncHandler(async (req, res) => {
     const avatarLocalPath = req.file?.path;
     if (!avatarLocalPath) return res.status(400).json(ApiResponse(400, "Avatar is required."));
+    const defaultAvatarUrl = "https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png";
+    if (req.user.avatar != defaultAvatarUrl) {
+        const temp = req.user.avatar.split("/");
+        const publicId = temp[temp.length - 1].replace(".jpg", "");
+        await cloudinaryDestory(publicId);
+    }
     const cloud = await cloudinaryUpload(avatarLocalPath);
     if (!cloud) return res.status(500).json(ApiResponse(500, "An error occured while uploading image."));
     const user = req.user;
     user.avatar = cloud?.url;
     await user.save({validateBeforeSave: false});
-    return res.status(200).json(ApiResponse(200, "Successfully updated avatar."), true);
+    return res.status(200).json(ApiResponse(200, "Successfully updated avatar."));
 });
 const removeAvatar = asyncHandler(async (req, res) => {
     const user = req.user;
-    delete user.avatar;
-    user.save({validateBeforeSave: false});
-    return res.status(200).json(ApiResponse(200, "Successfully removed avatar."), true);
+    const defaultAvatarUrl = "https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png";
+    if (user.avatar != defaultAvatarUrl) {
+        const temp = user.avatar.split("/");
+        const publicId = temp[temp.length - 1].replace(".jpg", "");
+        await cloudinaryDestory(publicId);
+    }
+    await User.findByIdAndUpdate(user._id, {
+        $unset: {
+            avatar: 1
+        }
+    }, {new: true});
+    return res.status(200).json(ApiResponse(200, "Successfully removed avatar."));
+});
+const updateFirstAndLastName = asyncHandler(async (req, res) => {
+    const {firstname, lastname} = req.body;
+    if (!firstname) return res.status(400).json(ApiResponse(400, "First name is required"));
+    const user = await User.findByIdAndUpdate(req.user._id, {
+        $set: {
+            firstname,
+            lastname
+        }
+    }, {new: true});
+    if (!user) return res.status(500).json(ApiResponse(500, "An error occured please try again"));
+    return res.status(200).json(ApiResponse(200, "Data updated successfully"));
+});
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+    const {username} = req.params;
+    if (!username) return res.status(400).json(ApiResponse(400, "Username is required"));
+    const channelData = await User.aggregate([
+        {
+            $match: {
+                username: username
+            }
+        },
+        {
+            $lookup: {
+                from: "subscription",
+                localField: "_id",
+                foreignField: "subscribedTo",
+                as: "subscribers"
+            }
+        },
+        {
+            $addFields: {
+                numberOfSubscribers: {
+                    $size: "$subscribers"
+                }
+            }
+        },
+        {
+            $project: {
+                firstname: 1,
+                lastname: 1,
+                username: 1,
+                avatar: 1,
+                coverImage: 1,
+                about: 1,
+                subscribers: 1,
+                numberOfSubscriber: 1
+            }
+        }
+    ]);
+    if (!channelData) return res.status(404, "No content available on channel");
+    return res.status(200).json(ApiResponse(200, "Channel Data fetched successfully", channelData[0]));
 })
-export {isUserNameAvailable, isemailAvailable, registerUser, logInUser, logOutUser, getCurrentUser, updateCoverImage, removeCoverImage, updateAvatar, removeAvatar};
+export {isUserNameAvailable, isemailAvailable, registerUser, logInUser, logOutUser, getCurrentUser, updateCoverImage, removeCoverImage, updateAvatar, removeAvatar, updateFirstAndLastName, getUserChannelProfile};
