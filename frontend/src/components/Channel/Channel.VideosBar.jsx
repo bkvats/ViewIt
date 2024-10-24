@@ -29,8 +29,8 @@ export default function ChannelVideosBar({playlist = false}) {
         <>
             <div ref={barRef} className="relative flex no-scrollbar overflow-auto lg:overflow-hidden">
                 {
-                    videos.map((i) => (
-                        playlist ? <PlayListCard {...i} /> : <VideoCard {...i} />
+                    videos.map((i, index) => (
+                        playlist ? <PlayListCard {...i} key={index} /> : <VideoCard {...i} key={index} />
                     ))
                 }
             </div>
@@ -38,12 +38,12 @@ export default function ChannelVideosBar({playlist = false}) {
                 if (barRef.current) {
                     barRef.current.scrollBy({ left: -300, behavior: "smooth" })
                 }
-            }}><img src="src\components\images\right-arrow.svg" alt="arrow" /></button>}
+            }}><img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1729707225/right-arrow_llw4nb.svg" alt="arrow" /></button>}
             {canScrollLeft && <button className={`bg-[#000000ba] absolute top-1/2 right-[-15px] rounded-full p-2 z-10 shadow-lg shadow-black`} onClick={() => {
                 if (barRef.current) {
                     barRef.current.scrollBy({ left: 300, behavior: "smooth" })
                 }
-            }}><img src="src\components\images\right-arrow.svg" alt="arrow" /></button>}
+            }}><img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1729707225/right-arrow_llw4nb.svg" alt="arrow" /></button>}
         </>
     )
 }

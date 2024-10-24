@@ -28,7 +28,7 @@ export default function ChannelVideos() {
         <div className="mt-4">
             <div className="flex gap-4 my-4">
                 {
-                    filterButtons.map((i) => (
+                    filterButtons.map((i, index) => (
                         <PrimaryButton {...i} key={i.title} className={`${!i.isActive && "!bg-[#00000000] text-white border-white border"} bg-white text-black hover:bg-opacity-100 font-normal`} eventHandler={() => {
                             setFilterButtons(filterButtons.map(element => ({ title: element.title, isActive: element.title == i.title })));
                         }} />

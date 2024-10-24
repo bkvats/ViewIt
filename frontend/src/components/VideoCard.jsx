@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-export default function VideoCard({thumbnail = "/src/components/images/thumbnail.jpg" , duration = "7:00", channeName = "", channelAvatar = "", videoTitle = "", views = "12M", time = "2 years"}) {
+export default function VideoCard({thumbnail = "https://res.cloudinary.com/duhmeadz6/image/upload/v1729707756/thumbnail_cvabme.jpg" , duration = "7:00", channeName = "", channelAvatar = "", videoTitle = "", views = "12M", time = "2 years"}) {
     const {userData} = useSelector(state => state.auth);
     return (
         <div className="min-w-80 max-w-80 rounded-2xl cursor-pointer bg-[#ffffff18] pb-1 mx-2 my-4 hover:shadow-md hover:shadow-[#ffffff4f] hover:scale-105 transition-transform duration-200 ease-in-out">

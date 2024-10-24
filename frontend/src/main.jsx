@@ -24,7 +24,7 @@ const router = createBrowserRouter(
         <Route path='' element={<Home />} />
         <Route element={<AuthLayout />}>
           <Route path='/subscription' element={<Subscription />} />
-          <Route path='/channel' element={<Channel />}>
+          <Route path='/:channel' element={<Channel />}>
             <Route path='' element={<ChannelHome />} />
             <Route path='videos' element={<ChannelVideos />} />
             <Route path='playlists' element={<ChannelPlaylists />} />

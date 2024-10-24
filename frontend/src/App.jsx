@@ -7,6 +7,7 @@ import Loader from "./components/Loader";
 import { login, setLoading } from "./store/authSlice";
 import axios from "axios";
 import PlayListCard from "./components/PlayListCard";
+import CenterBox from "./components/CenterBox";
 export default function App() {
   const { isLoggedIn, userData } = useSelector(state => state.auth);
   const authLoading = useSelector(state => state.auth.loading);

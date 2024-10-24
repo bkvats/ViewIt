@@ -11,15 +11,15 @@ export default function Header() {
     const userOptions = [
         {
             name: "History",
-            imgUrl: "src/components/images/Header/history-icon.svg"
+            imgUrl: "https://res.cloudinary.com/duhmeadz6/image/upload/v1729707448/history-icon_tfkyua.svg"
         },
         {
             name: "Your Channel",
-            imgUrl: "src/components/images/Header/channel-icon.svg"
+            imgUrl: "https://res.cloudinary.com/duhmeadz6/image/upload/v1729707411/channe-iconl_kxgn4p.svg"
         }
     ];
     return (
-        <header className="flex justify-between items-center mb-2 md:px-14 px-2 py-3">
+        <header className="flex justify-between items-center md:px-14 px-2 py-3 w-full h-14 sticky top-0 z-50 bg-[#1F1D2B] shadow-lg shadow-[#ffffff2b]">
             <div className="flex justify-between items-center md:w-1/2">
                 <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728321572/logo_fwrgzv.svg" alt="logo" width={50} />
                 <div className={`flex w-3/4 bg-[#808191] justify-between items-center rounded-lg`}>
@@ -56,10 +56,10 @@ export default function Header() {
                                     }
                                     dispatch(setLoading(false));
                                 }}>
-                                    <img src="src/components/images/Header/logout-icon.svg" alt="" width={20} />
+                                    <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1729707630/logout-icon_s0holo.svg" alt="" width={20} />
                                     <span>Log out</span>
                                 </li>
-                                <img src="src/components/images/Header/close.svg" alt="close" width={35} className="mt-12 mx-auto hover:bg-slate-800 p-2 rounded-full cursor-pointer" onClick={() => {
+                                <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1729707639/close_csliae.svg" alt="close" width={35} className="mt-12 mx-auto hover:bg-slate-800 p-2 rounded-full cursor-pointer" onClick={() => {
                                     setUserOptionsVisible(false);
                                 }}/>
                             </ul>
