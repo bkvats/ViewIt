@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CloseButton from "./CloseButton";
-export default function CenterBox({isVisible, children, parentDesign, closeEventHandler}) {
+import Loader from "./Loader";
+export default function CenterBox({isVisible, children, parentDesign, closeEventHandler, loading = false}) {
     useEffect(() => {
         if (isVisible) document.body.style.overflow = "hidden";
         else document.body.style.overflow = "auto";
@@ -10,6 +11,7 @@ export default function CenterBox({isVisible, children, parentDesign, closeEvent
             <div className={`bg-white min-h-52 min-w-80 text-2xl text-black rounded-2xl relative ${parentDesign}`}>
                 <CloseButton design={"absolute top-0 right-0 m-2"} eventHandler={closeEventHandler}/>
                 {children}
+                {loading && <Loader loaderBg={"white"}/>}
             </div>
         </div>
     );

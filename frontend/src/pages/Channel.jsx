@@ -4,15 +4,17 @@ import PrimaryButton from "../components/PrimaryButton";
 import { NavLink, Outlet, useParams } from "react-router-dom";
 import CenterBox from "../components/CenterBox";
 import { MdOutlineDeleteSweep, MdDriveFolderUpload } from "react-icons/md";
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit, FaWindows } from "react-icons/fa";
 import { IoMdDoneAll } from "react-icons/io";
 import ErrorComp from "../components/ErrorComp";
 import BasicInput from "../components/BasicInput";
+import axios from "axios";
 export default function Channel() {
     const { userData } = useSelector(state => state.auth);
     const [showEditButtons, setShowEditButtons] = useState(false);
     const channel = useParams().channel.replace("@", "");
     const [showImageUpload, setShowImageUpload] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [showNameEdit, setShowNameEdit] = useState(false);
     const [error, setError] = useState("");
     const [imageUpdateType, setImageUpdateType] = useState(-1);
@@ -38,8 +40,8 @@ export default function Channel() {
             }
         ],
         buttonReq: {
-            title: <IoMdDoneAll  size={"2rem"}/>,
-            eventHandler: () => {
+            title: <IoMdDoneAll size={"2rem"} />,
+            eventHandler: async () => {
                 setLoading(true);
                 setFirstname(firstname.trim());
                 setLastname(lastname.trim());
@@ -47,7 +49,14 @@ export default function Channel() {
                 if (!firstname) setError("First name is required!");
                 else if (NameRegex.test(firstname)) {
                     if (lastname && !NameRegex.test(lastname)) setError("Invalid last name!");
-                    else setDataOrder(dataOrder + 1);
+                    else {
+                        const response = await axios.patch("/api/v1/users/update-name", {
+                            firstname,
+                            lastname,
+                        });
+                        if (response.status == 200) window.location.reload();
+                        else setError(response.data.message);
+                    }
                 }
                 else setError("Invalid first name!");
                 setLoading(false);
@@ -71,10 +80,10 @@ export default function Channel() {
             <hr />
             <div className="my-4 flex flex-col justify-center lg:items-center lg:flex-row gap-2">
                 <div className="relative flex justify-center self-start lg:self-auto">
-                    <img src={userData.avatar} alt="avatar" className="w-32 h-32 md:min-w-48 md:min-h-48 rounded-full border-2 border-white" />
+                    <img src={userData.avatar} alt="avatar" className="w-32 h-32 md:min-w-48 md:min-h-48 rounded-full border-2 border-white object-cover object-center" />
                     {showEditButtons && <button className="bg-[#000000b0] p-2 lg:p-3 rounded-full bottom-1 absolute hover:bg-black" onClick={() => {
                         setShowImageUpload(true);
-                        setImageUpdateType(0);
+                        setImageUpdateType(1);
                     }}>
                         <img src="src/components/images/edit-icon.svg" alt="" />
                     </button>}
@@ -113,32 +122,49 @@ export default function Channel() {
             </div>
             <CenterBox isVisible={showImageUpload} closeEventHandler={() => {
                 setShowImageUpload(false);
-            }} parentDesign={"flex justify-center items-center"}>
+            }} parentDesign={"flex justify-center items-center"} loading = {loading}>
                 <div className="flex flex-col gap-4 justify-center items-center">
                     <div className="space-x-8">
-                        {<PrimaryButton title={<MdOutlineDeleteSweep size={"3rem"} />} className={"bg-red-400 !font-normal text-white !mt-0 !text-2xl"} />}
+                        {<PrimaryButton title={<MdOutlineDeleteSweep size={"3rem"} />} className={"bg-red-400 !font-normal text-white !mt-0 !text-2xl"} eventHandler={async () => {
+                            setLoading(true);
+                            const response = await axios.patch(`/api/v1/users/${imageUpdateType ? "remove-avatar" : "remove-cover"}`);
+                            if (response.status == 200) window.location.reload();
+                            else setError(response.data.message);
+                            setLoading(false);
+                        }}/>}
                         <PrimaryButton title={<MdDriveFolderUpload size={"3rem"} />} className={"bg-green-600 !mt-0 !font-normal text-white !text-2xl"} eventHandler={() => {
                             inputRef.current.click();
                         }} />
                     </div>
                     <ErrorComp message={error} />
-                    <input ref={inputRef} type="file" name="" onChange={(event) => {
+                    <input ref={inputRef} type="file" name="" onChange={async (event) => {
                         setError("");
                         const file = event.target.files[0];
-                        if (file.size > (10 * 1024 * 1024)) {
-                            setError("Image size should be less then 10 MB");
-                            return;
-                        }
                         if (!["image/jpeg", "image/png", "image/webp", "image/jpg"].includes(file.type)) {
                             setError("Invalid file type. Please upload jpg/png/webp image only!");
                             return;
                         }
+                        if (file.size > (10 * 1024 * 1024)) {
+                            setError("Image size should be less then 10 MB");
+                            return;
+                        }
+                        setLoading(true);
+                        const response = await axios.patch(`/api/v1/users/${imageUpdateType ? "update-avatar" : "update-cover"}`, {
+                            imageFile: file
+                        }, {
+                            headers: { "Content-Type": "multipart/form-data" }
+                        });
+                        if (response.status == 200) {
+                            window.location.reload();
+                        }
+                        else setError(response.data.message);
+                        setLoading(false);
                     }} hidden />
                 </div>
             </CenterBox>
             <CenterBox isVisible={showNameEdit} closeEventHandler={() => {
                 setShowNameEdit(false);
-            }} parentDesign={"w-1/2"}>
+            }} parentDesign={"w-1/2"} loading={loading}>
                 <div className="flex flex-col items-center gap-2 mt-4">
                     <div className="w-1/2 space-y-4">
                         {
@@ -148,7 +174,7 @@ export default function Channel() {
                         }
                     </div>
                     <ErrorComp message={error} />
-                    <PrimaryButton {...editName.buttonReq} className={"bg-red-400 text-white font-normal"}/>
+                    <PrimaryButton {...editName.buttonReq} className={"bg-red-400 text-white font-normal"} />
                 </div>
             </CenterBox>
         </>
