@@ -45,5 +45,43 @@ const logOutUser = asyncHandler(async (req, res) => {
 });
 const getCurrentUser = asyncHandler(async (req, res) => {
     return res.status(200).json(ApiResponse(200, "User fetched successfully", req.user));
+});
+const updateCoverImage = asyncHandler(async (req, res) => {
+    const coverImageLocalPath = req.file?.path;
+    if (!coverImageLocalPath) return res.status(400).json(ApiResponse(400, "Cover image is required."));
+    const cloud = await cloudinaryUpload(coverImageLocalPath);
+    if (!cloud) return res.status(500).json(ApiResponse(500, "An error occured while uploading image."));
+    const user = await User.findById(req.user._id);
+    user.coverImage = cloud?.url;
+    await user.save({validateBeforeSave: false});
+    return res.status(200).json(ApiResponse(200, "Successfully set cover image.", true));
+});
+const removeCoverImage = asyncHandler(async (req, res) => {
+    const user = req.user;
+    if (user.coverImage) {
+        await User.findByIdAndUpdate(req.user._id, {
+            $unset: {
+                coverImage: 1
+            }},
+            {new: true}
+        );
+    }
+    return res.status(200).json(ApiResponse(200, "Successfully removed cover image.", true));
 })
-export {isUserNameAvailable, isemailAvailable, registerUser, logInUser, logOutUser, getCurrentUser};
+const updateAvatar = asyncHandler(async (req, res) => {
+    const avatarLocalPath = req.file?.path;
+    if (!avatarLocalPath) return res.status(400).json(ApiResponse(400, "Avatar is required."));
+    const cloud = await cloudinaryUpload(avatarLocalPath);
+    if (!cloud) return res.status(500).json(ApiResponse(500, "An error occured while uploading image."));
+    const user = req.user;
+    user.avatar = cloud?.url;
+    await user.save({validateBeforeSave: false});
+    return res.status(200).json(ApiResponse(200, "Successfully updated avatar."), true);
+});
+const removeAvatar = asyncHandler(async (req, res) => {
+    const user = req.user;
+    delete user.avatar;
+    user.save({validateBeforeSave: false});
+    return res.status(200).json(ApiResponse(200, "Successfully removed avatar."), true);
+})
+export {isUserNameAvailable, isemailAvailable, registerUser, logInUser, logOutUser, getCurrentUser, updateCoverImage, removeCoverImage, updateAvatar, removeAvatar};
