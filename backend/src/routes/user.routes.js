@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCurrentUser, isemailAvailable, isUserNameAvailable, logInUser, logOutUser, registerUser, removeAvatar, removeCoverImage, updateAvatar, updateCoverImage, updateFirstAndLastName } from "../controllers/user.controller.js";
+import { getCurrentUser, getUserChannelProfile, isemailAvailable, isUserNameAvailable, logInUser, logOutUser, registerUser, removeAvatar, removeCoverImage, updateAvatar, updateCoverImage, updateFirstAndLastName } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 
@@ -8,6 +8,7 @@ userRouter.route("/is-username-available").get(isUserNameAvailable);
 userRouter.route("/is-email-available").get(isemailAvailable);
 userRouter.route("/register-user").post(upload.single("avatar"), registerUser);
 userRouter.route("/login").post(logInUser);
+userRouter.route("/get-channel/:username").get(getUserChannelProfile);
 // SECURED ROUTES (user must be login to access these routes)
 
 userRouter.route("/logout").post(verifyJwt, logOutUser);
