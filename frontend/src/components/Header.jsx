@@ -32,7 +32,7 @@ export default function Header() {
             </div>
             <div className="flex justify-center items-center space-x-6">
                 {isLoggedIn ? <div className="flex flex-col items-end md:items-center">
-                    <img src={userData.avatar} alt="avatar" className={`rounded-full w-9 h-9 cursor-pointer ${userOptionsVisible && "p-[2px] border-[1px] border-white"}`} onClick={() => {
+                    <img src={userData.avatar} alt="avatar" className={`rounded-full w-9 h-9 cursor-pointer object-cover object-center ${userOptionsVisible && "p-[2px] border-[1px] border-white"}`} onClick={() => {
                         setUserOptionsVisible(!userOptionsVisible);
                     }} />
                         <div className={`${userOptionsVisible ? "scale-100" : "scale-0"} absolute top-14 border-[1px] border-white rounded-lg overflow-auto transition-transform origin-top-right lg:origin-top`}>

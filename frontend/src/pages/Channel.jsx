@@ -7,11 +7,13 @@ import CenterBox from "../components/CenterBox";
 import { MdOutlineDeleteSweep, MdDriveFolderUpload } from "react-icons/md";
 import { FaRegEdit, FaWindows } from "react-icons/fa";
 import { IoMdDoneAll } from "react-icons/io";
+import { MdMovieCreation } from "react-icons/md";
 import ErrorComp from "../components/ErrorComp";
 import BasicInput from "../components/BasicInput";
 import axios from "axios";
 export default function Channel() {
-    const { userData, loading } = useSelector(state => state.auth);
+    const { userData } = useSelector(state => state.auth);
+    const { loading } = useSelector(state => state.loading);
     const [showEditButtons, setShowEditButtons] = useState(false);
     const {username} = useParams();
     const route = "/channel" + (username ? "/" + username : "");
@@ -21,7 +23,7 @@ export default function Channel() {
     const [imageUpdateType, setImageUpdateType] = useState(-1);
     const [firstname, setFirstname] = useState(userData.firstname);
     const [lastname, setLastname] = useState(userData.lastname);
-    const [channelData, setChannelData] = useState(null);
+    const [channelData, setChannelData] = useState({});
     const inputRef = useRef(null);
     const dispatch = useDispatch();
     const editName = {
@@ -67,18 +69,25 @@ export default function Channel() {
         }
     };
     useEffect(() => {
+        dispatch(setLoading(true));
         let requiredUsername = "";
         if (username) requiredUsername = username;
         else {
             requiredUsername = userData.username;
             setShowEditButtons(true);
         }
-        axios(`/api/v1/users/get-channel/${requiredUsername}`).then()
-    }, [userData]);
+        axios(`/api/v1/users/get-channel/${requiredUsername}`).then((response) => {
+            setChannelData(response.data.data);
+            dispatch(setLoading(false));
+        }).catch((error) => {
+            console.log(error);
+            dispatch(setLoading(false));
+        })
+    }, []);
     return (
         <>
             <div className="relative">
-                <img src={userData.coverImage ? userData.coverImage : "https://res.cloudinary.com/duhmeadz6/image/upload/v1729537747/istockphoto-1422735620-612x612_zr06bg.jpg"} alt="cover-image" className="mx-auto my-4 w-full h-36 md:h-48 object-cover object-center rounded-lg" />
+                <img src={channelData.coverImage ? channelData.coverImage : "https://res.cloudinary.com/duhmeadz6/image/upload/v1729537747/istockphoto-1422735620-612x612_zr06bg.jpg"} alt="cover-image" className="mx-auto my-4 w-full h-36 md:h-48 object-cover object-center rounded-lg" />
                 {showEditButtons && <button className="bg-[#000000b0] p-3 rounded-full absolute top-0 right-0 m-2 hover:bg-black" onClick={() => {
                     setShowImageUpload(true);
                     setImageUpdateType(0);
@@ -89,7 +98,7 @@ export default function Channel() {
             <hr />
             <div className="my-4 flex flex-col justify-center lg:items-center lg:flex-row gap-2">
                 <div className="relative flex justify-center self-start lg:self-auto">
-                    <img src={userData.avatar} alt="avatar" className="w-32 h-32 md:min-w-48 md:min-h-48 rounded-full border-2 border-white object-cover object-center" />
+                    <img src={channelData.avatar} alt="" className="w-32 h-32 md:min-w-48 md:min-h-48 rounded-full border-2 border-white object-cover object-center" />
                     {showEditButtons && <button className="bg-[#000000b0] p-2 lg:p-3 rounded-full bottom-1 absolute hover:bg-black" onClick={() => {
                         setShowImageUpload(true);
                         setImageUpdateType(1);
@@ -98,15 +107,20 @@ export default function Channel() {
                     </button>}
                 </div>
                 <div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 relative">
                         <h1 className="font-extrabold text-4xl lg:text-6xl">
-                            {userData.firstname} {userData.lastname}
+                            {channelData.firstname} {channelData.lastname}
                         </h1>
-                        {showEditButtons && <button className="p-2 lg:p-3 rounded-full hover:bg-black" onClick={() => {
+                        {showEditButtons && <><button className="p-2 lg:p-3 rounded-full hover:bg-black" onClick={() => {
                             setShowNameEdit(true);
                         }}>
                             <FaRegEdit size={"25px"} />
-                        </button>}
+                        </button>
+                        <div className="absolute right-0 flex items-center gap-1 justify-center">
+                        <img src = "src/pages/images/round-video.gif" className="-rotate-12 hidden md:block" width={70}/><PrimaryButton title={"Upload Video"} className={"!mt-0 bg-green-800 font-normal"} />
+                        </div>
+                        </>
+                        }
                     </div>
                     <div className="flex gap-4 items-center">
                         <span className="text-xl mt-4">@{userData.username}</span>
