@@ -4,18 +4,16 @@ import Sidebar from "./components/Sidebar";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "./components/Loader";
-import { login, setLoading } from "./store/authSlice";
+import { login, setAuthLoading } from "./store/authSlice";
 import axios from "axios";
-import PlayListCard from "./components/PlayListCard";
-import CenterBox from "./components/CenterBox";
 export default function App() {
-  const { isLoggedIn, userData } = useSelector(state => state.auth);
-  const authLoading = useSelector(state => state.auth.loading);
+  const { isLoggedIn, authLoading } = useSelector(state => state.auth);
+  const {loading} = useSelector(state => state.loading);
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
       if (!authLoading) {
-        dispatch(setLoading(true));
+        dispatch(setAuthLoading(true));
         if (!isLoggedIn) {
           console.log("marging api call");
           try {
@@ -25,23 +23,23 @@ export default function App() {
             }
           }
           catch (error) {
-            // console.log(error);
+            console.log(error);
           }
         }
-        dispatch(setLoading(false));
+        dispatch(setAuthLoading(false));
       }
     })();
   }, [dispatch]);
-  if (authLoading) return <Loader />;
   return (
-    <>
-      <Header />
+      authLoading ? <Loader /> : <>
+        <Header />
       <main className="w-full flex gap-2">
         <Sidebar />
-        <div className="px-4 w-full lg:w-5/6">
+        <div className="lg:ml-52 px-4 w-full lg:w-5/6">
         <Outlet />
         </div>
       </main>
-    </>
+      {loading && <Loader />}
+      </>
   );
 }

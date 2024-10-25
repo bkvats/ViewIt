@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { setLoading } from "../store/loadingSlice";
 import BasicInput from "../components/BasicInput";
 import PrimaryButton from "../components/PrimaryButton";
 import ErrorComp from "../components/ErrorComp";
@@ -7,9 +8,10 @@ import Loader from "../components/Loader";
 import UploadAvatar from "../components/UploadAvatar";
 import SecondaryButton from "../components/SecondaryButton";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 export default function SignUp() {
-    const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
+    const { loading } = useSelector(state => state.loading);
     const [email, setEmail] = useState("");
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
@@ -21,6 +23,7 @@ export default function SignUp() {
     const [dataOrder, setDataOrder] = useState(0);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const dataFlow = [
         {
             title: "Enter you email",
@@ -40,7 +43,7 @@ export default function SignUp() {
                     const emailRegex = /^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,253}\.[a-zA-Z]{2,}$/;
                     if (!email) setError("Email is required!");
                     else if (emailRegex.test(email)) {
-                        setLoading(true);
+                        dispatch(setLoading(true));
                         try {
                             const { data } = await axios.get("/api/v1/users/is-email-available", {
                                 params: {
@@ -54,7 +57,7 @@ export default function SignUp() {
                             console.log(error.message);
                             setError("Something went wrong! Please try again...");
                         }
-                        setLoading(false);
+                        dispatch(setLoading(false));
                     }
                     else setError("Enter a valid email address!");
                 }
@@ -81,7 +84,7 @@ export default function SignUp() {
             buttonReq: {
                 title: "Next",
                 eventHandler: () => {
-                    setLoading(true);
+                    dispatch(setLoading(true));
                     setFirstname(firstname.trim());
                     setLastname(lastname.trim());
                     const NameRegex = /^[A-Za-zÀ-ÿ]+([-'\s][A-Za-zÀ-ÿ]+)*$/;
@@ -91,7 +94,7 @@ export default function SignUp() {
                         else setDataOrder(dataOrder + 1);
                     }
                     else setError("Invalid first name!");
-                    setLoading(false);
+                    dispatch(setLoading(false));
                 }
             }
         },
@@ -113,7 +116,7 @@ export default function SignUp() {
                     const usernameRegex = /^(?!.*[-_]{2})(?![-_])[a-zA-Z0-9-_]{3,20}(?<![-_])$/;
                     if (!username) setError("Username is required!");
                     else if (usernameRegex.test(username)) {
-                        setLoading(true);
+                        dispatch(setLoading(true));
                         try {
                             const { data } = await axios.get("/api/v1/users/is-username-available", {
                                 params: {
@@ -129,7 +132,7 @@ export default function SignUp() {
                         }
                     }
                     else setError("Invalid username!");
-                    setLoading(false);
+                    dispatch(setLoading(false));
                 }
             }
         },
@@ -154,14 +157,14 @@ export default function SignUp() {
             buttonReq: {
                 title: "Next",
                 eventHandler: () => {
-                    setLoading(true);
+                    dispatch(setLoading(true));
                     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>?~`-])[A-Za-z\d!@#$%^&*()_+[\]{};':"\\|,.<>?~`-]{8,20}$/;
                     if (!password) setError("Password is required!");
                     else if (!confirmPassword) setError("Kindly re-enter the password");
                     else if (!passwordRegex.test(password)) setError("Password must be 8-20 characters, with at least one uppercase letter, one lowercase letter, one digit, and one special character.");
                     else if (password !== confirmPassword) setError("Passwords does'nt match!");
                     else setDataOrder(dataOrder + 1);
-                    setLoading(false);
+                    dispatch(setLoading(false));
                 }
             }
         },
@@ -179,7 +182,7 @@ export default function SignUp() {
                 title: "Next",
                 eventHandler: async () => {
                     setError("");
-                    setLoading(true);
+                    dispatch(setLoading(true));
                     setLoadingMessage("Saving Info...");
                     try {
                         await axios.post("/api/v1/users/register-user", {
@@ -200,7 +203,7 @@ export default function SignUp() {
                         setError("Something went wrong! Kindly try again...");
                         console.log(error);
                     }
-                    setLoading(false);
+                    dispatch(setLoading(false));
                     setLoadingMessage("");
                 }
             }

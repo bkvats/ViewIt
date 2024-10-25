@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import PrimaryButton from "../PrimaryButton";
-import { isAction, isAsyncThunkAction } from "@reduxjs/toolkit";
 import VideoCard from "../VideoCard";
+import { useOutletContext } from 'react-router-dom';
 export default function ChannelVideos() {
+    const { temp } = useOutletContext();
+    console.log(temp);
     const [filterButtons, setFilterButtons] = useState([
         {
             title: "Latest",

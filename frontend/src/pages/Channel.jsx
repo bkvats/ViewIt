@@ -1,5 +1,6 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { setLoading } from "../store/loadingSlice";
+import { useDispatch, useSelector } from "react-redux";
 import PrimaryButton from "../components/PrimaryButton";
 import { NavLink, Outlet, useParams } from "react-router-dom";
 import CenterBox from "../components/CenterBox";
@@ -10,17 +11,19 @@ import ErrorComp from "../components/ErrorComp";
 import BasicInput from "../components/BasicInput";
 import axios from "axios";
 export default function Channel() {
-    const { userData } = useSelector(state => state.auth);
+    const { userData, loading } = useSelector(state => state.auth);
     const [showEditButtons, setShowEditButtons] = useState(false);
-    const channel = useParams().channel.replace("@", "");
+    const {username} = useParams();
+    const route = "/channel" + (username ? "/" + username : "");
     const [showImageUpload, setShowImageUpload] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [showNameEdit, setShowNameEdit] = useState(false);
     const [error, setError] = useState("");
     const [imageUpdateType, setImageUpdateType] = useState(-1);
     const [firstname, setFirstname] = useState(userData.firstname);
     const [lastname, setLastname] = useState(userData.lastname);
+    const [channelData, setChannelData] = useState(null);
     const inputRef = useRef(null);
+    const dispatch = useDispatch();
     const editName = {
         title: "Enter your name",
         inputFields: [
@@ -42,7 +45,7 @@ export default function Channel() {
         buttonReq: {
             title: <IoMdDoneAll size={"2rem"} />,
             eventHandler: async () => {
-                setLoading(true);
+                dispatch(setLoading(true));
                 setFirstname(firstname.trim());
                 setLastname(lastname.trim());
                 const NameRegex = /^[A-Za-zÀ-ÿ]+([-'\s][A-Za-zÀ-ÿ]+)*$/;
@@ -59,12 +62,18 @@ export default function Channel() {
                     }
                 }
                 else setError("Invalid first name!");
-                setLoading(false);
+                dispatch(setLoading(false));
             }
         }
     };
     useEffect(() => {
-        if (userData.username === channel) setShowEditButtons(true);
+        let requiredUsername = "";
+        if (username) requiredUsername = username;
+        else {
+            requiredUsername = userData.username;
+            setShowEditButtons(true);
+        }
+        axios(`/api/v1/users/get-channel/${requiredUsername}`).then()
     }, [userData]);
     return (
         <>
@@ -114,11 +123,11 @@ export default function Channel() {
             <hr />
             <div>
                 <div className="px-4 mt-4 text-2xl space-x-6">
-                    <NavLink to={`/@${userData.username}`} className={({ isActive }) => `${(isActive && window.location.pathname == `/@${userData.username}`) && "font-bold border-b-2 border-white bg-[#00000076]"}  py-1 px-4 transition-colors duration-200`}>Home</NavLink>
-                    <NavLink to={`/@${userData.username}/videos`} className={({ isActive }) => `${isActive && "font-bold border-b-2 border-white bg-[#00000076]"}  py-1 px-4 transition-colors duration-200`}>Videos</NavLink>
-                    <NavLink to={`/@${userData.username}/playlists`} className={({ isActive }) => `${isActive && "font-bold border-b-2 border-white bg-[#00000076]"}  py-1 px-4 transition-colors duration-200`}>Playlists</NavLink>
+                    <NavLink to={`${route}`} className={({ isActive }) => `${(isActive && window.location.pathname == `${route}`) && "font-bold border-b-2 border-white bg-[#00000076]"}  py-1 px-4 transition-colors duration-200`}>Home</NavLink>
+                    <NavLink to={`${route}/videos`} className={({ isActive }) => `${isActive && "font-bold border-b-2 border-white bg-[#00000076]"}  py-1 px-4 transition-colors duration-200`}>Videos</NavLink>
+                    <NavLink to={`${route}/playlists`} className={({ isActive }) => `${isActive && "font-bold border-b-2 border-white bg-[#00000076]"}  py-1 px-4 transition-colors duration-200`}>Playlists</NavLink>
                 </div>
-                <Outlet />
+                <Outlet context={{temp: "temp value"}} />
             </div>
             <CenterBox isVisible={showImageUpload} closeEventHandler={() => {
                 setShowImageUpload(false);
@@ -126,11 +135,11 @@ export default function Channel() {
                 <div className="flex flex-col gap-4 justify-center items-center">
                     <div className="space-x-8">
                         {<PrimaryButton title={<MdOutlineDeleteSweep size={"3rem"} />} className={"bg-red-400 !font-normal text-white !mt-0 !text-2xl"} eventHandler={async () => {
-                            setLoading(true);
+                            dispatch(setLoading(true));
                             const response = await axios.patch(`/api/v1/users/${imageUpdateType ? "remove-avatar" : "remove-cover"}`);
                             if (response.status == 200) window.location.reload();
                             else setError(response.data.message);
-                            setLoading(false);
+                            dispatch(setLoading(false));
                         }}/>}
                         <PrimaryButton title={<MdDriveFolderUpload size={"3rem"} />} className={"bg-green-600 !mt-0 !font-normal text-white !text-2xl"} eventHandler={() => {
                             inputRef.current.click();
@@ -148,7 +157,7 @@ export default function Channel() {
                             setError("Image size should be less then 10 MB");
                             return;
                         }
-                        setLoading(true);
+                        dispatch(setLoading(true));
                         const response = await axios.patch(`/api/v1/users/${imageUpdateType ? "update-avatar" : "update-cover"}`, {
                             imageFile: file
                         }, {
@@ -158,7 +167,7 @@ export default function Channel() {
                             window.location.reload();
                         }
                         else setError(response.data.message);
-                        setLoading(false);
+                        dispatch(setLoading(false));
                     }} hidden />
                 </div>
             </CenterBox>

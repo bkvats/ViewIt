@@ -2,7 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { logout, setLoading } from "../store/authSlice";
+import { logout } from "../store/authSlice";
+import { setLoading } from "../store/loadingSlice";
 export default function Header() {
     const [search, setSearch] = useState("");
     const [userOptionsVisible, setUserOptionsVisible] = useState(false);

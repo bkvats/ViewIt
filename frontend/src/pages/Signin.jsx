@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { setLoading } from "../store/loadingSlice";
 import BasicInput from "../components/BasicInput";
 import PrimaryButton from "../components/PrimaryButton";
 import SecondaryButton from "../components/SecondaryButton";
@@ -6,14 +7,16 @@ import Loader from "../components/Loader";
 import ErrorComp from "../components/ErrorComp";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 export default function SignIn() {
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const { loading } = useSelector(state => state.loading);
     const [loadingMessage, setLoadingMessage] = useState("");
     const [dataOrder, setDataOrder] = useState(0);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const dataFlow = [
         {
             title: "User your VT account",
@@ -32,7 +35,7 @@ export default function SignIn() {
                     setIdentifier(identifier.trim());
                     if (!identifier) setError("Enter either email or username");
                     else {
-                        setLoading(true);
+                        dispatch(setLoading(true));
                         try {
                             let response = await axios.get("/api/v1/users/is-email-available", {
                                 params: {
@@ -53,7 +56,7 @@ export default function SignIn() {
                             console.log(error.message);
                             setError("Something went wrong! Please try again...");
                         }
-                        setLoading(false);
+                        dispatch(setLoading(false));
                     }
                 }
             }
@@ -72,7 +75,7 @@ export default function SignIn() {
             buttonReq: {
                 title: "Next",
                 eventHandler: async () => {
-                    setLoading(true);
+                    dispatch(setLoading(true));
                     setLoadingMessage("Verifying...");
                     try {
                         const {data} = await axios.post("api/v1/users/login", {identifier, password});
@@ -81,7 +84,7 @@ export default function SignIn() {
                     catch (error) {
                         setError(error.response.data.message);
                     }
-                    setLoading(false);
+                    dispatch(setLoading(false));
                     setLoadingMessage("");
                 }
             }
