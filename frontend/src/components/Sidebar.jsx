@@ -56,7 +56,7 @@ export default function Sidebar() {
             <button className={`bg-[#000000] fixed rounded-full p-2 lg:hidden z-10 border border-white ${showSideBar ? "left-[60%] rotate-180 border border-white top-1/2 hidden" : "left-[-20px]"}`} onClick={() => {
                 setShowSideBar(!showSideBar);
             }}><img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1729707225/right-arrow_llw4nb.svg" alt="arrow" /></button>
-            <div className={`${showSideBar ? "border-r" : "translate-x-[-100%] lg:translate-x-0"} transition-transform duration-500 ease-in-out bg-[#1F1D2B] w-[70%] lg:block lg:w-1/6 fixed top-14 left-0 h-screen z-50`} ref={sideBarRef}>
+            <div className={`${showSideBar ? "border-r" : "translate-x-[-100%] lg:translate-x-0"} transition-transform duration-500 ease-in-out bg-[#1F1D2B] w-[70%] lg:block lg:w-1/6 fixed top-0 left-0 pt-14 h-screen z-10`} ref={sideBarRef}>
                 <ul className="">
                     {
                         links.map((i) => (

@@ -8,7 +8,7 @@ import { login, setAuthLoading } from "./store/authSlice";
 import axios from "axios";
 export default function App() {
   const { isLoggedIn, authLoading } = useSelector(state => state.auth);
-  const {loading} = useSelector(state => state.loading);
+  const { loading } = useSelector(state => state.loading);
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
@@ -31,15 +31,15 @@ export default function App() {
     })();
   }, [dispatch]);
   return (
-      authLoading ? <Loader /> : <>
-        <Header />
-      <main className="w-full flex gap-2">
+    authLoading ? <Loader /> : <>
+      <Header />
+      <main className=" w-full flex gap-2">
         <Sidebar />
-        <div className="lg:ml-52 px-4 w-full lg:w-5/6">
-        <Outlet />
+        <div className="lg:absolute right-0 top-14 bg-[#1F1D2B] px-4 w-full lg:w-5/6">
+          <Outlet />
         </div>
       </main>
       {loading && <Loader />}
-      </>
+    </>
   );
 }

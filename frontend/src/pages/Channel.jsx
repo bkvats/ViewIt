@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { setLoading } from "../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PrimaryButton from "../components/PrimaryButton";
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
 import CenterBox from "../components/CenterBox";
 import { MdOutlineDeleteSweep, MdDriveFolderUpload } from "react-icons/md";
 import { FaRegEdit, FaWindows } from "react-icons/fa";
 import { IoMdDoneAll } from "react-icons/io";
-import { MdMovieCreation } from "react-icons/md";
+import { RiVideoUploadFill } from "react-icons/ri";
 import ErrorComp from "../components/ErrorComp";
 import BasicInput from "../components/BasicInput";
 import axios from "axios";
@@ -26,6 +26,7 @@ export default function Channel() {
     const [channelData, setChannelData] = useState({});
     const inputRef = useRef(null);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const editName = {
         title: "Enter your name",
         inputFields: [
@@ -116,8 +117,11 @@ export default function Channel() {
                         }}>
                             <FaRegEdit size={"25px"} />
                         </button>
-                        <div className="absolute right-0 flex items-center gap-1 justify-center">
-                        <img src = "src/pages/images/round-video.gif" className="-rotate-12 hidden md:block" width={70}/><PrimaryButton title={"Upload Video"} className={"!mt-0 bg-green-800 font-normal"} />
+                        <div className="absolute right-0 flex items-center gap-1 md:gap-3 justify-center">
+                        <RiVideoUploadFill size={"2rem"}/>
+                        <PrimaryButton title={"Upload"} className={"!mt-0 bg-green-800 font-normal"} eventHandler={() => {
+                            navigate("/upload");
+                        }}/>
                         </div>
                         </>
                         }

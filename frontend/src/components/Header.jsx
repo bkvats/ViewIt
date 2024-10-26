@@ -20,7 +20,7 @@ export default function Header() {
         }
     ];
     return (
-        <header className="flex justify-between items-center md:px-14 px-2 py-3 w-full h-14 sticky top-0 z-50 bg-[#1F1D2B] shadow-lg shadow-[#ffffff2b]">
+        <header className="flex justify-between items-center md:px-14 px-2 py-3 w-full h-14 sticky lg:fixed top-0 z-50 bg-[#1F1D2B] shadow-lg shadow-[#ffffff2b]">
             <div className="flex justify-between items-center md:w-1/2">
                 <img src="https://res.cloudinary.com/duhmeadz6/image/upload/v1728321572/logo_fwrgzv.svg" alt="logo" width={50} />
                 <div className={`flex w-3/4 bg-[#808191] justify-between items-center rounded-lg`}>
