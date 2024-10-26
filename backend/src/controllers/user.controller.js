@@ -54,6 +54,17 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     if (!cloud) return res.status(500).json(ApiResponse(500, "An error occured while uploading image."));
     const user = await User.findById(req.user._id);
     user.coverImage = cloud?.url;
+    if (user.coverImage) {
+        const temp = user.coverImage.split("/");
+        const publicId = temp[temp.length - 1].replace(".jpg", "");
+        await cloudinaryDestory(publicId);
+        await User.findByIdAndUpdate(req.user._id, {
+            $unset: {
+                coverImage: 1
+            }},
+            {new: true}
+        );
+    }
     await user.save({validateBeforeSave: false});
     return res.status(200).json(ApiResponse(200, "Successfully set cover image."));
 });
@@ -76,15 +87,15 @@ const updateAvatar = asyncHandler(async (req, res) => {
     const avatarLocalPath = req.file?.path;
     if (!avatarLocalPath) return res.status(400).json(ApiResponse(400, "Avatar is required."));
     const defaultAvatarUrl = "https://res.cloudinary.com/duhmeadz6/image/upload/v1728580223/user-default-avatar_bvvdhh.png";
+    const cloud = await cloudinaryUpload(avatarLocalPath);
+    if (!cloud) return res.status(500).json(ApiResponse(500, "An error occured while uploading image."));
+    const user = req.user;
+    user.avatar = cloud?.url;
     if (req.user.avatar != defaultAvatarUrl) {
         const temp = req.user.avatar.split("/");
         const publicId = temp[temp.length - 1].replace(".jpg", "");
         await cloudinaryDestory(publicId);
     }
-    const cloud = await cloudinaryUpload(avatarLocalPath);
-    if (!cloud) return res.status(500).json(ApiResponse(500, "An error occured while uploading image."));
-    const user = req.user;
-    user.avatar = cloud?.url;
     await user.save({validateBeforeSave: false});
     return res.status(200).json(ApiResponse(200, "Successfully updated avatar."));
 });
