@@ -120,7 +120,7 @@ export default function Channel() {
                         <div className="absolute right-0 flex items-center gap-1 md:gap-3 justify-center">
                         <RiVideoUploadFill size={"2rem"}/>
                         <PrimaryButton title={"Upload"} className={"!mt-0 bg-green-800 font-normal"} eventHandler={() => {
-                            navigate("/upload");
+                            navigate("/channel/upload");
                         }}/>
                         </div>
                         </>

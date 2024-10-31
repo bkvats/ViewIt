@@ -49,24 +49,58 @@ const videoSchema = new mongoose.Schema({
                 },
                 replies: {
                     type: [String]
+                },
+                likes: {
+                    type: Number,
+                    required: true,
+                    default: 0
                 }
             }
         ]
     },
     views: {
-        type: Number,
-        required: true,
-        default: 0
+        type: [
+            {
+                viewedBy: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User"
+                },
+                viewedAt: {
+                    type: Date,
+                    required: true,
+                    default: Date.now()
+                },
+                viewedTill: {
+                    type: Number,
+                    required: true,
+                    default: 0
+                }
+            }
+        ]
     },
-    owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+    likes: {
+        type: [
+            {
+                likedBy: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User"
+                }
+            }
+        ]
     },
-    isPublished: {
-        type: Boolean,
-        required: true,
-        default: true
+    owners: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ]
+    },
+    visibility: {
+        type: String,
+        enum: ["Private","Unlisted", "Public"],
+        required: true
     }
-}, {timestamps: true});
+}, { timestamps: true });
 videoSchema.plugin(mongooseAggregatePaginate)
 export const Video = mongoose.model("Video", videoSchema);

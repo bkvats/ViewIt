@@ -8,7 +8,7 @@ import { login, setAuthLoading } from "./store/authSlice";
 import axios from "axios";
 export default function App() {
   const { isLoggedIn, authLoading } = useSelector(state => state.auth);
-  const { loading } = useSelector(state => state.loading);
+  const { loading, message } = useSelector(state => state.loading);
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
@@ -39,7 +39,7 @@ export default function App() {
           <Outlet />
         </div>
       </main>
-      {loading && <Loader />}
+      {loading && <Loader message={message} />}
     </>
   );
 }

@@ -53,7 +53,6 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     const cloud = await cloudinaryUpload(coverImageLocalPath);
     if (!cloud) return res.status(500).json(ApiResponse(500, "An error occured while uploading image."));
     const user = await User.findById(req.user._id);
-    user.coverImage = cloud?.url;
     if (user.coverImage) {
         const temp = user.coverImage.split("/");
         const publicId = temp[temp.length - 1].replace(".jpg", "");
@@ -65,6 +64,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
             {new: true}
         );
     }
+    user.coverImage = cloud?.url;
     await user.save({validateBeforeSave: false});
     return res.status(200).json(ApiResponse(200, "Successfully set cover image."));
 });
@@ -90,12 +90,12 @@ const updateAvatar = asyncHandler(async (req, res) => {
     const cloud = await cloudinaryUpload(avatarLocalPath);
     if (!cloud) return res.status(500).json(ApiResponse(500, "An error occured while uploading image."));
     const user = req.user;
-    user.avatar = cloud?.url;
     if (req.user.avatar != defaultAvatarUrl) {
         const temp = req.user.avatar.split("/");
         const publicId = temp[temp.length - 1].replace(".jpg", "");
         await cloudinaryDestory(publicId);
     }
+    user.avatar = cloud?.url;
     await user.save({validateBeforeSave: false});
     return res.status(200).json(ApiResponse(200, "Successfully updated avatar."));
 });

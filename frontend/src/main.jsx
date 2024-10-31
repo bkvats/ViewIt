@@ -17,7 +17,8 @@ import AuthLayout from './components/AuthLayout.jsx'
 import ChannelVideos from './components/Channel/channel.videos.jsx'
 import ChannelPlaylists from './components/Channel/channel.playlists.jsx'
 import ChannelHome from './components/Channel/Channel.Home.jsx'
-import UploadVideo from './components/UploadVideo.jsx'
+import UploadVideo from './components/VideoUpload/VideoUpload.jsx'
+import VideoUpload from './components/VideoUpload/VideoUpload.jsx'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -34,8 +35,8 @@ const router = createBrowserRouter(
             <Route path='' element={<ChannelHome />} />
             <Route path='videos' element={<ChannelVideos />} />
             <Route path='playlists' element={<ChannelPlaylists />} />
+            <Route path='upload' element={<VideoUpload />} />
           </Route>
-          <Route path='/upload' element={<UploadVideo />} />
           <Route path='/history' element={<History />} />
           <Route path='/playlists' element={<Playlists />} />
           <Route path='/liked-videos' element={<LikedVideos />} />
