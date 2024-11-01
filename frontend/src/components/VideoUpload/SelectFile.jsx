@@ -282,7 +282,7 @@ export default function SelectFile({ index, languages, setLanguages }) {
         if (showList) searchRef.current.focus();
     }, [showList]);
     return (
-        <div className="relative flex gap-4 items-center">
+        <div className="flex relative gap-4 items-center flex-wrap">
             <div className="border border-black rounded-md min-w-48 gap-4 flex items-center justify-between cursor-pointer hover:bg-black hover:bg-opacity-5" onClick={() => {
                 setShowList(!showList);
             }}>
@@ -313,22 +313,27 @@ export default function SelectFile({ index, languages, setLanguages }) {
                     }
                 </ul>
             </div>}
-            {languages[index].file ? <div className="flex justify-between items-center w-full">
-                <p className="line-clamp-1 text-lg font-light max-w-[85%] min-w-[85%]">{languages[index].file.name}</p>
+            {languages[index].file ? <div className="flex justify-between items-center w-full flex-wrap">
+                <p className="line-clamp-1 text-xl font-light max-w-[85%] min-w-[85%]">{languages[index].file.name}</p>
                 <div>
                     <button className="hover:bg-black hover:bg-opacity-10 p-2 rounded-full" onClick={() => {
                         fileRef.current.click();
                     }}>
                         <TbReplace />
                     </button>
-                    {languages.length > 1 && <button className="hover:bg-black hover:bg-opacity-10 p-2 rounded-full" onClick={() => {
-                        setLanguages(languages.filter((_, i) => i != index));
+                    <button className={`${languages.length > 1 ? "hover:bg-black hover:bg-opacity-10 text-red-500" : "cursor-not-allowed text-red-200"} p-2 rounded-full`} onClick={() => {
+                        if (languages.length > 1) setLanguages(languages.filter((_, i) => i != index));
                     }}>
-                        <MdDelete fill="red" />
-                    </button>}
+                        <MdDelete />
+                    </button>
                 </div>
             </div> :
                 <button className="hover:bg-black hover:bg-opacity-10 p-2 rounded-full" onClick={() => {
+                    setError("");
+                    if (languages[index].lang === "Select a language") {
+                        setError("Select a language first.");
+                        return;
+                    }
                     fileRef.current.click();
                 }}><MdUpload /></button>}
             <input
@@ -338,8 +343,9 @@ export default function SelectFile({ index, languages, setLanguages }) {
                     setError("");
                     const file = event.target.files[0];
                     if (!file) return;
-                    if (!["video/mp4", "video/mkv", "video/avi"].includes(file.type)) {
-                        setError("Invalid file type! Kindly upload mp4/mkv/avi formats only.");
+                    console.log(file);
+                    if (!["video/mp4", "video/mkv", "video/avi", "video/mov"].includes(file.type)) {
+                        setError("Invalid file type! Kindly upload mp4/mkv/avi/mov formats only.");
                         return;
                     }
                     languages[index].file = file;
