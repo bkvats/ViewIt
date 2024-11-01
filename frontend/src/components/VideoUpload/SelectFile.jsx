@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ErrorComp from "../ErrorComp";
-import { IoIosArrowDropdown } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
+import { MdUpload } from "react-icons/md";
+import { TbReplace } from "react-icons/tb";
+import { MdOutlineArrowDropDown } from "react-icons/md";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-export default function SelectFile() {
-    const [lang, setLang] = useState("Select a language");
+export default function SelectFile({ index, languages, setLanguages }) {
     const [error, setError] = useState("");
     const [showList, setShowList] = useState(false);
-    const allLangs = ["Abkhazian",
+    const selectedLangs = languages.map(i => i.lang);
+    const allLangs = ["Not Available", "Abkhazian",
         "Acehnese",
         "Acoli",
         "Afar",
@@ -271,18 +274,23 @@ export default function SelectFile() {
         "riulian",
         "ulani",
         "urdish",
-        "yrgyz"];
+        "yrgyz"].filter((i => !selectedLangs.includes(i)));
     const [filteredList, setFilteredList] = useState(allLangs);
+    const searchRef = useRef(null);
+    const fileRef = useRef(null);
+    useEffect(() => {
+        if (showList) searchRef.current.focus();
+    }, [showList]);
     return (
-        <div className="relative">
-            <div className="border-2 border-black border-opacity-55 w-fit gap-4 flex items-center cursor-pointer hover:bg-black hover:bg-opacity-10" onClick={() => {
+        <div className="relative flex gap-4 items-center">
+            <div className="border border-black rounded-md min-w-48 gap-4 flex items-center justify-between cursor-pointer hover:bg-black hover:bg-opacity-5" onClick={() => {
                 setShowList(!showList);
             }}>
-                {lang}
-                <IoIosArrowDropdown />
+                <span className="text-lg text-blue-900 mx-2">{languages[index].lang}</span>
+                <MdOutlineArrowDropDown />
             </div>
-            {showList && <div className="shadow-lg shadow-black absolute top-0 bg-white rounded-2xl p-2 " >
-                <input type="text" name="search" id="" placeholder="Search..." onChange={(event) => {
+            {showList && <div className="shadow-lg shadow-black absolute top-0 bg-white rounded-2xl p-2 z-10" >
+                <input ref={searchRef} type="text" name="search" id="" placeholder="Search..." onChange={(event) => {
                     setFilteredList(allLangs.filter((i) => {
                         return i.toLowerCase().includes(event.target.value.toLowerCase());
                     }))
@@ -295,9 +303,9 @@ export default function SelectFile() {
                 }}><IoIosCloseCircleOutline size={"2rem"} /></button>
                 <ul className="h-48 overflow-auto px-4">
                     {
-                        filteredList.map((i, index) => (
-                            <li key={index} className="cursor-pointer hover:underline" onClick={() => {
-                                setLang(i);
+                        filteredList.map((i, j) => (
+                            <li key={j} className="cursor-pointer hover:underline" onClick={() => {
+                                languages[index].lang = i;
                                 setShowList(false);
                                 setFilteredList(allLangs);
                             }}>{i}</li>
@@ -305,7 +313,39 @@ export default function SelectFile() {
                     }
                 </ul>
             </div>}
-            
+            {languages[index].file ? <div className="flex justify-between items-center w-full">
+                <p className="line-clamp-1 text-lg font-light max-w-[85%] min-w-[85%]">{languages[index].file.name}</p>
+                <div>
+                    <button className="hover:bg-black hover:bg-opacity-10 p-2 rounded-full" onClick={() => {
+                        fileRef.current.click();
+                    }}>
+                        <TbReplace />
+                    </button>
+                    {languages.length > 1 && <button className="hover:bg-black hover:bg-opacity-10 p-2 rounded-full" onClick={() => {
+                        setLanguages(languages.filter((_, i) => i != index));
+                    }}>
+                        <MdDelete fill="red" />
+                    </button>}
+                </div>
+            </div> :
+                <button className="hover:bg-black hover:bg-opacity-10 p-2 rounded-full" onClick={() => {
+                    fileRef.current.click();
+                }}><MdUpload /></button>}
+            <input
+                ref={fileRef}
+                type="file"
+                onChange={(event) => {
+                    setError("");
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    if (!["video/mp4", "video/mkv", "video/avi"].includes(file.type)) {
+                        setError("Invalid file type! Kindly upload mp4/mkv/avi formats only.");
+                        return;
+                    }
+                    languages[index].file = file;
+                    setLanguages([...languages]);
+                }}
+                hidden />
             <ErrorComp message={error} design={"text-base"} />
         </div>
     )
