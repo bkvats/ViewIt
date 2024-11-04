@@ -3,6 +3,7 @@ import CenterBox from "../CenterBox";
 import { useNavigate } from "react-router-dom";
 import { IoAdd } from "react-icons/io5";
 import SelectFile from "./SelectFile";
+import PrimaryButton from "../PrimaryButton";
 export default function VideoUpload() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
@@ -31,7 +32,7 @@ export default function VideoUpload() {
             </div>
             {
                 step == 1 &&
-                <div className="my-2">
+                <div className="my-2 flex flex-col">
                     <h1 className="text-4xl font-semibold">Video Files</h1>
                     <hr className="border-[1px] my-2 w-52 border-black border-opacity-50" />
                     <p className="text-md font-normal opacity-70 mb-4">Select Video Files to get started. <span className="text-base">(You can select various files based on the languages, click on the add button to add more files.)</span></p>
@@ -40,7 +41,7 @@ export default function VideoUpload() {
                             <SelectFile key={i.lang} languages={languages} setLanguages={setLanguages} index={index} />
                         ))
                     }
-                    <button className="p-1 hover:bg-black hover:bg-opacity-20 rounded-full" onClick={() => {
+                    <button className="p-1 hover:bg-black hover:bg-opacity-20 rounded-full w-fit" onClick={() => {
                         if (!languages.at(-1).file) return;
                         languages.push({
                             lang: "Select a language",
@@ -49,6 +50,19 @@ export default function VideoUpload() {
                         });
                         setLanguages([...languages]);
                     }}><IoAdd color="rgb(30,58,138)" /></button>
+                    {languages[0].file && <PrimaryButton title={"Next"} className={"bg-black text-white self-end"} eventHandler={() => {
+                        setStep(step + 1);
+                    }}/>}
+                </div>
+            }
+            {
+                step == 2 &&
+                <div>
+                    {
+                        languages.map((i) => (
+                            <p>{i.file ? "Contains file" : "Not contain any file"}</p>
+                        ))
+                    }
                 </div>
             }
         </CenterBox>

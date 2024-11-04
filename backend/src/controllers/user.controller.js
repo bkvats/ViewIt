@@ -168,5 +168,5 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     const user = await User.findOne({username}).select("-password");
     if (!username) return res.status(404).json(ApiResponse(404, "No channel found"));
     return res.status(200).json(ApiResponse(200, "Channel found succesfully", user));
-})
+});
 export {isUserNameAvailable, isemailAvailable, registerUser, logInUser, logOutUser, getCurrentUser, updateCoverImage, removeCoverImage, updateAvatar, removeAvatar, updateFirstAndLastName, getUserChannelProfile};

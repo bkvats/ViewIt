@@ -5,6 +5,7 @@ import { MdUpload } from "react-icons/md";
 import { TbReplace } from "react-icons/tb";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import axios from "axios";
 export default function SelectFile({ index, languages, setLanguages }) {
     const [error, setError] = useState("");
     const [showList, setShowList] = useState(false);
@@ -349,6 +350,20 @@ export default function SelectFile({ index, languages, setLanguages }) {
                         return;
                     }
                     languages[index].file = file;
+                    axios.post("/api/v1/videos/upload-video", {
+                        videoFile: file
+                    }, {
+                        headers: {
+                            "Content-type": "multipart/form-data"
+                        },
+                        onUploadProgress: (ProgressEvent) => {
+                            console.log(ProgressEvent);
+                        }
+                    }).then((respone) => {
+                        console.log("uploaded");
+                    }).catch((error) => {
+                        console.log(error);
+                    });
                     setLanguages([...languages]);
                 }}
                 hidden />
